@@ -5,15 +5,35 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/auth');
+const itemRoutes = require('./routes/items');
+const swapRoutes = require('./routes/swaps');
 
 dotenv.config();
 const app = express();
 
-app.use(cors());
+// Validate required environment variables
+const requiredEnvVars = [
+  'MONGO_URI',
+  'JWT_SECRET',
+  'FRONTEND_URL'
+];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`Missing environment variable: ${envVar}`);
+    process.exit(1);
+  }
+}
+
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/swaps', swapRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
