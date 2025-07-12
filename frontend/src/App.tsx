@@ -12,11 +12,15 @@ import AddItemPage from './pages/AddItemPage';
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [formType, setFormType] = useState<'login' | 'register'>('login');
 
-  const handleNavigate = (page: string, itemId?: string) => {
+  const handleNavigate = (page: string, itemId?: string, formType?: 'login' | 'register') => {
     setCurrentPage(page);
     if (itemId) {
       setSelectedItemId(itemId);
+    }
+    if (formType) {
+      setFormType(formType);
     }
   };
 
@@ -25,7 +29,7 @@ function App() {
       case 'home':
         return <LandingPage onNavigate={handleNavigate} />;
       case 'auth':
-        return <AuthPage onNavigate={handleNavigate} />;
+        return <AuthPage onNavigate={handleNavigate} initialForm={formType} />;
       case 'browse':
         return <BrowsePage onNavigate={handleNavigate} />;
       case 'dashboard':

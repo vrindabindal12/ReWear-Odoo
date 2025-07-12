@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   currentPage: string;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, itemId?: string, formType?: 'login' | 'register') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
@@ -138,13 +138,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             ) : (
               <div className="flex space-x-2">
                 <button
-                  onClick={() => onNavigate('auth')}
+                  onClick={() => onNavigate('auth', undefined, 'login')}
                   className="bg-white dark:bg-gray-800 border border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   Login
                 </button>
                 <button
-                  onClick={() => onNavigate('auth')}
+                  onClick={() => onNavigate('auth', undefined, 'register')}
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   Register
@@ -201,7 +201,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <>
                 <button
                   onClick={() => {
-                    onNavigate('auth');
+                    onNavigate('auth', undefined, 'login');
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left px-3 py-2 text-base font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
@@ -210,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </button>
                 <button
                   onClick={() => {
-                    onNavigate('auth');
+                    onNavigate('auth', undefined, 'register');
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left px-3 py-2 text-base font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
