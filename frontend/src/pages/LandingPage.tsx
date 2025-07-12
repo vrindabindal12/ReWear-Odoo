@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Recycle, Users, ShoppingBag, Leaf } from 'lucide-react';
+import { ArrowRight, Recycle, Users, ShoppingBag, Shirt, Watch, Footprints, Baby, Sparkles, Umbrella } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import ItemCard from '../components/ItemCard';
 import { mockItems } from '../data/mockData';
@@ -13,21 +13,36 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const featuredItems = mockItems.slice(0, 4);
 
-  const features = [
+  const categories = [
     {
-      icon: <Recycle className="h-8 w-8" />,
-      title: 'Sustainable Fashion',
-      description: 'Give your clothes a second life and reduce textile waste'
+      icon: <Shirt className="h-8 w-8" />,
+      title: 'Tops',
+      description: 'Discover a variety of shirts, blouses, and sweaters for all styles.'
     },
     {
-      icon: <Users className="h-8 w-8" />,
-      title: 'Community Driven',
-      description: 'Connect with like-minded fashion enthusiasts in your area'
+      icon: <Watch className="h-8 w-8" />,
+      title: 'Accessories',
+      description: 'Find unique jewelry, bags, and scarves to complete your look.'
     },
     {
-      icon: <Leaf className="h-8 w-8" />,
-      title: 'Eco-Friendly',
-      description: 'Make a positive impact on the environment with every swap'
+      icon: <Footprints className="h-8 w-8" />,
+      title: 'Footwear',
+      description: 'Explore sneakers, boots, and heels for every occasion.'
+    },
+    {
+      icon: <Baby className="h-8 w-8" />,
+      title: 'Kids',
+      description: 'Swap adorable outfits for children of all ages.'
+    },
+    {
+      icon: <Sparkles className="h-8 w-8" />,
+      title: 'Dresses',
+      description: 'Browse elegant dresses for casual or formal wear.'
+    },
+    {
+      icon: <Umbrella className="h-8 w-8" />,
+      title: 'Outerwear',
+      description: 'Stay warm with stylish jackets, coats, and vests.'
     }
   ];
 
@@ -167,29 +182,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         </div>
       </motion.section>
 
-      {/* Features Section */}
+      {/* Categories Section */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-              Why Choose ReWear?
+              Shop by Categories
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Join thousands of users who are making fashion more sustainable, one swap at a time.
+              Find exactly what you're looking for. Let's make fashion more sustainable, one swap at a time.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-12">
-            {features.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {categories.map((category, index) => (
               <div key={index} className="text-center group cursor-pointer">
                 <div className="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-8 text-green-600 dark:text-green-400 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  {feature.icon}
+                  {category.icon}
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
-                  {feature.title}
+                  {category.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {feature.description}
+                  {category.description}
                 </p>
               </div>
             ))}
