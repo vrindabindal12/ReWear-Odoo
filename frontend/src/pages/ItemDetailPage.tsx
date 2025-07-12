@@ -1,7 +1,12 @@
+
 import React, { useState } from 'react';
-import { ArrowLeft, Heart, Share2, MapPin, Calendar, Star, User, MessageCircle, ArrowUpDown } from 'lucide-react';
+import { ArrowLeft, Heart, Share2, MapPin, Calendar, Star, ArrowUpDown } from 'lucide-react';
 import { mockItems } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
+import Footer from '../components/Footer';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 interface ItemDetailPageProps {
   itemId: string;
@@ -52,7 +57,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
   };
 
   const submitSwapRequest = () => {
-    // Here you would typically send the swap request to your backend
     console.log('Swap request submitted:', {
       itemId: item.id,
       type: swapType,
@@ -60,12 +64,22 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
     });
     setShowSwapModal(false);
     setMessage('');
-    // Show success message or redirect
   };
 
+  // Prepare similar items for the carousel
+  const similarItems = mockItems.filter(i => i.category === item.category && i.id !== item.id);
+  // Duplicate items if fewer than slidesToShow to ensure carousel functionality
+  const slidesToShow = 4;
+  const displayItems = similarItems.length < slidesToShow 
+    ? [...similarItems, ...similarItems].slice(0, Math.max(slidesToShow, similarItems.length * 2))
+    : similarItems;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+        {/* Page Title */}
+        <h1 className="text-4xl font-bold text-green-700 dark:text-green-400 mb-8">Item Detail Page</h1>
+
         {/* Back Button */}
         <button
           onClick={() => onNavigate('browse')}
@@ -84,13 +98,21 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                 alt={item.title}
                 className="w-full h-96 lg:h-[500px] object-cover rounded-lg"
               />
+              <div className="absolute top-4 left-4">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  item.isAvailable
+                    ? 'bg-green-600 text-white'
+                    : 'bg-red-600 text-white'
+                }`}>
+                  {item.isAvailable ? 'Available' : 'Not Available'}
+                </span>
+              </div>
               {!item.isAvailable && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
                   <span className="text-white font-semibold text-lg">Not Available</span>
                 </div>
               )}
             </div>
-            
             {item.images.length > 1 && (
               <div className="flex space-x-2 overflow-x-auto">
                 {item.images.map((image, index) => (
@@ -118,9 +140,9 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
           <div className="space-y-6">
             <div>
               <div className="flex items-start justify-between mb-4">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                   {item.title}
-                </h1>
+                </h2>
                 <div className="flex items-center space-x-2">
                   <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                     <Heart className="h-6 w-6" />
@@ -130,7 +152,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                   </button>
                 </div>
               </div>
-
               <div className="flex items-center space-x-4 mb-4">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getConditionColor(item.condition)}`}>
                   {item.condition.charAt(0).toUpperCase() + item.condition.slice(1)} Condition
@@ -139,13 +160,11 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                   {item.pointValue} Points
                 </span>
               </div>
-
               <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
                 {item.description}
               </p>
             </div>
 
-            {/* Item Details Grid */}
             <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Category</p>
@@ -165,7 +184,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
               </div>
             </div>
 
-            {/* Tags */}
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Tags</p>
               <div className="flex flex-wrap gap-2">
@@ -180,7 +198,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
               </div>
             </div>
 
-            {/* Uploader Info */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Listed by
@@ -213,7 +230,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
               </div>
             </div>
 
-            {/* Action Buttons */}
             {item.isAvailable && user && user.id !== item.uploaderId && (
               <div className="space-y-3">
                 <button
@@ -223,7 +239,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                   <ArrowUpDown className="h-5 w-5" />
                   <span>Request Swap</span>
                 </button>
-                
                 <button
                   onClick={() => {
                     setSwapType('points');
@@ -247,16 +262,78 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
             )}
           </div>
         </div>
+
+        {/* Similar Products Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Similar Products</h2>
+          {displayItems.length === 0 ? (
+            <div className="text-center text-gray-600 dark:text-gray-400">
+              <p>No similar items found.</p>
+              <button
+                onClick={() => onNavigate('browse')}
+                className="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
+              >
+                Browse All Items
+              </button>
+            </div>
+          ) : (
+            <div className="relative">
+              <Slider
+                dots={true}
+                infinite={displayItems.length >= slidesToShow}
+                speed={500}
+                slidesToShow={Math.min(slidesToShow, displayItems.length)}
+                slidesToScroll={1}
+                autoplay={displayItems.length >= slidesToShow}
+                autoplaySpeed={2000}
+                centerMode={displayItems.length >= slidesToShow}
+                centerPadding="0px"
+                responsive={[
+                  {
+                    breakpoint: 1024,
+                    settings: { slidesToShow: Math.min(2, displayItems.length) }
+                  },
+                  {
+                    breakpoint: 600,
+                    settings: { slidesToShow: 1 }
+                  }
+                ]}
+              >
+                {displayItems.map((similar, index) => (
+                  <div key={`${similar.id}-${index}`} className="px-2">
+                    <div
+                      className="min-w-[220px] bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:shadow-lg transition flex-shrink-0"
+                      onClick={() => onNavigate('itemDetail', similar.id)}
+                    >
+                      <img
+                        src={similar.images[0]}
+                        alt={similar.title}
+                        className="w-full h-32 object-cover rounded-lg mb-3"
+                      />
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{similar.title}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{similar.pointValue} Points</p>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+                        similar.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}>
+                        {similar.isAvailable ? 'Available' : 'Not Available'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Swap Request Modal */}
+      <Footer />
+
       {showSwapModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {swapType === 'swap' ? 'Request Item Swap' : 'Redeem with Points'}
             </h3>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -285,7 +362,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                   </label>
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Message (Optional)
@@ -298,7 +374,6 @@ const ItemDetailPage: React.FC<ItemDetailPageProps> = ({ itemId, onNavigate }) =
                   placeholder="Add a message to the item owner..."
                 />
               </div>
-
               <div className="flex space-x-3">
                 <button
                   onClick={submitSwapRequest}
