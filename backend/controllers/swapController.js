@@ -145,6 +145,14 @@ const updateSwapRequest = asyncHandler(async (req, res) => {
   res.json(swapRequest);
 });
 
+// @route   GET /api/swaps/sent
+// @desc    Get swap requests sent by the authenticated user
+// @access  Private
+const getSentSwapRequests = asyncHandler(async (req, res) => {
+  const swapRequests = await SwapRequest.find({ requesterId: req.user._id })
+    .sort({ createdDate: -1 });
+  res.json(swapRequests);
+});
 const deleteSwapRequest = asyncHandler(async (req, res) => {
   const swapRequest = await SwapRequest.findById(req.params.id);
   if (!swapRequest) {
@@ -166,4 +174,10 @@ const deleteSwapRequest = asyncHandler(async (req, res) => {
   res.status(204).send();
 });
 
-module.exports = { createSwapRequest, getSwapRequests, updateSwapRequest, deleteSwapRequest };
+module.exports = { 
+  createSwapRequest, 
+  getSwapRequests, 
+  updateSwapRequest, 
+  deleteSwapRequest, 
+  getSentSwapRequests 
+};

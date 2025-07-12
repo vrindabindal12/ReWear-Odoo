@@ -8,6 +8,7 @@ import BrowsePage from './pages/BrowsePage';
 import Dashboard from './pages/Dashboard';
 import ItemDetailPage from './pages/ItemDetailPage';
 import AddItemPage from './pages/AddItemPage';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -42,6 +43,8 @@ function App() {
         );
       case 'add-item':
         return <AddItemPage onNavigate={handleNavigate} />;
+      case 'admin':
+        return <AdminPanel onNavigate={handleNavigate} />;
       default:
         return <LandingPage onNavigate={handleNavigate} />;
     }

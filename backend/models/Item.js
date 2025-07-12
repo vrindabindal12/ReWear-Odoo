@@ -23,7 +23,15 @@ const itemSchema = new mongoose.Schema({
   pointValue: { type: Number, required: true, min: 0 },
   isAvailable: { type: Boolean, default: true },
   uploadDate: { type: Date, default: Date.now },
-  location: { type: String }
+  location: { type: String },
+  status: { 
+    type: String, 
+    enum: ['pending', 'approved', 'rejected'], 
+    default: 'pending' 
+  },
+  moderatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  moderatedAt: { type: Date },
+  rejectionReason: { type: String }
 }, {
   timestamps: true
 });

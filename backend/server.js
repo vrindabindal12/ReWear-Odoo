@@ -7,6 +7,8 @@ const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/auth');
 const itemRoutes = require('./routes/items');
 const swapRoutes = require('./routes/swaps');
+const userRoutes = require('./routes/users');
+const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 const app = express();
@@ -34,6 +36,8 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/swaps', swapRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

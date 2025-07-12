@@ -19,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     { name: 'Categories', id: 'categories' },
     { name: 'How It Works', id: 'how-it-works' },
     ...(user ? [{ name: 'Dashboard', id: 'dashboard' }] : []),
+    ...(user && user.role === 'admin' ? [{ name: 'Admin', id: 'admin' }] : []),
   ];
 
   return (

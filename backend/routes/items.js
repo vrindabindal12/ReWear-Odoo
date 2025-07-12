@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { createItem, getUserItems } = require('../controllers/itemController');
+const { 
+  createItem, 
+  getUserItems, 
+  getAllItems, 
+  getItemById, 
+  updateItem, 
+  deleteItem 
+} = require('../controllers/itemController');
 const { protect } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const fs = require('fs').promises;
@@ -45,7 +52,14 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
+// Public routes
+router.get('/', getAllItems);
+router.get('/:id', getItemById);
+
+// Protected routes
 router.post('/', protect, uploadMiddleware, createItem);
 router.get('/me', protect, getUserItems);
+router.put('/:id', protect, updateItem);
+router.delete('/:id', protect, deleteItem);
 
 module.exports = router;

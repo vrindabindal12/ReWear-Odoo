@@ -6,6 +6,7 @@ export interface User {
   points: number;
   joinedDate: string;
   location?: string;
+  role?: string;
 }
 
 export interface ClothingItem {
