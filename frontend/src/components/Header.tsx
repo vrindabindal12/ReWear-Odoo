@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Moon, Sun, Menu, X, Recycle, User, Plus, Search, Bell } from 'lucide-react';
+import { Moon, Sun, Menu, X, Recycle, User, Plus, Bell } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -14,8 +14,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigation = [
+    { name: 'Home', id: 'home' },
     { name: 'Browse', id: 'browse' },
-    { name: 'Dashboard', id: 'dashboard' },
+    { name: 'Categories', id: 'categories' },
+    { name: 'How It Works', id: 'how-it-works' },
+    ...(user ? [{ name: 'Dashboard', id: 'dashboard' }] : []),
   ];
 
   return (
@@ -35,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {user && navigation.map((item) => (
+            {navigation.map((item) => (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
@@ -79,13 +82,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+              className="relative p-1 w-12 h-8 bg-gray-200 dark:bg-gray-700 rounded-full transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
             >
-              {isDark ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-600" />
-              )}
+              <div className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 dark:from-blue-500 dark:to-indigo-600 transform transition-transform duration-300 ${isDark ? 'translate-x-4' : 'translate-x-0'}`}>
+                {isDark ? (
+                  <Sun className="h-4 w-4 text-white absolute top-1 left-1" />
+                ) : (
+                  <Moon className="h-4 w-4 text-white absolute top-1 left-1" />
+                )}
+              </div>
             </button>
 
             {/* User menu */}
@@ -131,12 +136,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 )}
               </div>
             ) : (
-              <button
-                onClick={() => onNavigate('auth')}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                Sign In
-              </button>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => onNavigate('auth')}
+                  className="bg-white dark:bg-gray-800 border border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => onNavigate('auth')}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  Register
+                </button>
+              </div>
             )}
 
             {/* Mobile menu button */}
@@ -156,7 +169,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
-            {user && navigation.map((item) => (
+            {navigation.map((item) => (
               <button
                 key={item.id}
                 onClick={() => {
@@ -183,6 +196,28 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 <Plus className="h-4 w-4" />
                 <span>List Item</span>
               </button>
+            )}
+            {!user && (
+              <>
+                <button
+                  onClick={() => {
+                    onNavigate('auth');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    onNavigate('auth');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
+                >
+                  Register
+                </button>
+              </>
             )}
           </div>
         )}
