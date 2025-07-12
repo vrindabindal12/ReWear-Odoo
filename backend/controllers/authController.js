@@ -44,23 +44,8 @@ const register = asyncHandler(async (req, res) => {
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  // Create user
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    avatar,
-    points: 100 // Default points for new users
-  });
-
-  // Generate JWT
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: '1d'
-  });
+  const user = await User.create({ email, password, name });
+  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
   res.status(201).json({ token, user: { id: user._id, email, name, role: user.role } });
 });
@@ -88,19 +73,8 @@ const login = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials');
   }
 
-  // Generate JWT
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: '1d'
-  });
-
-  res.json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    avatar: user.avatar,
-    points: user.points,
-    token
-  });
+  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  res.json({ token, user: { id: user._id, email, name: user.name, role: user.role } });
 });
 
 module.exports = { register, login };
