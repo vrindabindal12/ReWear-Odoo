@@ -4,6 +4,10 @@ import { ArrowRight, Recycle, Users, ShoppingBag, Shirt, Watch, Footprints, Baby
 import { useAuth } from '../contexts/AuthContext';
 import ItemCard from '../components/ItemCard';
 import { mockItems } from '../data/mockData';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+import Footer from '../components/Footer';
 
 interface LandingPageProps {
   onNavigate: (page: string, itemId?: string) => void;
@@ -46,12 +50,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     }
   ];
 
-  const stats = [
-    { number: '10K+', label: 'Items Swapped' },
-    { number: '5K+', label: 'Happy Users' },
-    { number: '50K+', label: 'CO2 Saved (lbs)' },
-    { number: '95%', label: 'Satisfaction Rate' }
-  ];
+ 
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000, // 5 seconds
+    centerMode: true,
+    centerPadding: '0px',
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 }
+      },
+      {
+        breakpoint: 600,
+        settings: { slidesToShow: 1 }
+      }
+    ]
+  };
 
   // Animation variants for the hero section
   const containerVariants = {
@@ -225,15 +245,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
           
           <div className="relative">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredItems.map((item, index) => (
-                <ItemCard
-                  key={item.id ?? index}
-                  item={item}
-                  onClick={() => onNavigate('item-detail', item.id)}
-                />
+            <Slider {...carouselSettings}>
+              {(featuredItems.length < 8 ? featuredItems.concat(featuredItems) : featuredItems).map((item, index) => (
+                <div key={item.id ?? index} className="px-2">
+                  <ItemCard
+                    item={item}
+                    onClick={() => onNavigate('item-detail', item.id)}
+                  />
+                </div>
               ))}
-            </div>
+            </Slider>
             
             <div className="flex justify-center mt-8">
               <button
@@ -248,50 +269,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-24 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center relative">
-            {stats.map((stat, index) => (
-              <div key={index} className="group">
-                <div className="text-4xl md:text-6xl font-black mb-3 group-hover:scale-110 transition-transform duration-300">{stat.number}</div>
-                <div className="text-green-100 text-lg font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">
-            Ready to Start Your Sustainable Fashion Journey?
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-            Join our community today and make a positive impact on the environment while refreshing your wardrobe.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => user ? onNavigate('add-item') : onNavigate('auth')}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            >
-              List Your First Item
-            </button>
-            <button
-              onClick={() => onNavigate('browse')}
-              className="border-2 border-green-600 text-green-600 dark:text-green-400 px-10 py-4 rounded-2xl font-bold hover:bg-green-600 hover:text-white dark:hover:text-white transition-all duration-300"
-            >
-              Browse Items
-            </button>
-          </div>
-        </div>
-      </section>
+      <Footer />
     </div>
   );
 };

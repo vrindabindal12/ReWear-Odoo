@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Star, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import { ClothingItem } from '../types';
 
 interface ItemCardProps {
