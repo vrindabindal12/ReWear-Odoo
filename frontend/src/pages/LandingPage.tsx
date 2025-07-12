@@ -1,8 +1,9 @@
 import React from 'react';
-import { ArrowRight, Recycle, Users, Leaf, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Recycle, Users, ShoppingBag, Leaf } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { mockItems } from '../data/mockData';
 import ItemCard from '../components/ItemCard';
+import { mockItems } from '../data/mockData';
 
 interface LandingPageProps {
   onNavigate: (page: string, itemId?: string) => void;
@@ -10,16 +11,7 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const [currentSlide, setCurrentSlide] = React.useState(0);
   const featuredItems = mockItems.slice(0, 4);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredItems.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredItems.length) % featuredItems.length);
-  };
 
   const features = [
     {
@@ -46,44 +38,134 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     { number: '95%', label: 'Satisfaction Rate' }
   ];
 
+  // Animation variants for the hero section
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut',
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  // Animation for stats cards
+  const statsVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: 'easeOut' } },
+    hover: { y: -10, transition: { duration: 0.3 } },
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/20"></div>
+      <motion.section
+        className="relative bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 text-white overflow-hidden"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/15 via-transparent to-black/25"></div>
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-24 left-24 w-96 h-96 bg-white/10 rounded-full blur-4xl"></div>
+          <div className="absolute bottom-24 right-24 w-128 h-128 bg-emerald-300/15 rounded-full blur-4xl"></div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tight">
+            <motion.h1
+              className="text-5xl md:text-7xl font-black mb-10 leading-tight tracking-tight"
+              variants={itemVariants}
+            >
               Swap, Share, and
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-200 to-emerald-200"> Sustain</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-12 text-green-50/90 max-w-3xl mx-auto leading-relaxed">
+            </motion.h1>
+            <motion.p
+              className="text-xl md:text-2xl mb-12 text-green-50/90 max-w-4xl mx-auto leading-relaxed"
+              variants={itemVariants}
+            >
               Transform your wardrobe while protecting the planet. Exchange unused clothing through direct swaps or our point-based system.
-            </p>
+            </motion.p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button
+            <motion.div
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+              variants={itemVariants}
+            >
+              <motion.button
                 onClick={() => user ? onNavigate('browse') : onNavigate('auth')}
-                className="bg-white text-green-700 px-10 py-4 rounded-2xl font-bold hover:bg-green-50 transition-all duration-300 flex items-center space-x-2 shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 text-lg"
+                className="bg-white text-green-600 px-6 py-3 rounded-2xl font-bold hover:bg-green-50 transition-all duration-300 flex items-center space-x-3 shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 text-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span>Start Swapping</span>
-                <ArrowRight className="h-5 w-5" />
-              </button>
+                <ArrowRight className="h-6 w-6" />
+              </motion.button>
               
-              <button
+              <motion.button
                 onClick={() => onNavigate('browse')}
-                className="border-2 border-white/50 text-white px-10 py-4 rounded-2xl font-bold hover:bg-white hover:text-green-700 transition-all duration-300 backdrop-blur-sm text-lg"
+                className="border-2 border-white/50 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white hover:text-green-700 transition-all duration-300 backdrop-blur-sm text-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Browse Items
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
+
+            {/* Stats Section */}
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-12"
+              variants={containerVariants}
+            >
+              <motion.div
+                className="flex items-center justify-center space-x-3 text-green-50/95"
+                variants={statsVariants}
+                whileHover="hover"
+              >
+                <div className="p-3 rounded-full bg-green-200/20 backdrop-blur-sm">
+                  <Recycle className="h-8 w-8 text-green-200" />
+                </div>
+                <div>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-green-200 to-emerald-200 bg-clip-text text-transparent">10K+</div>
+                  <div className="text-sm font-medium">Items Swapped</div>
+                </div>
+              </motion.div>
+              <motion.div
+                className="flex items-center justify-center space-x-3 text-green-50/95"
+                variants={statsVariants}
+                whileHover="hover"
+              >
+                <div className="p-3 rounded-full bg-green-200/20 backdrop-blur-sm">
+                  <Users className="h-8 w-8 text-green-200" />
+                </div>
+                <div>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-green-200 to-emerald-200 bg-clip-text text-transparent">5K+</div>
+                  <div className="text-sm font-medium">Active Members</div>
+                </div>
+              </motion.div>
+              <motion.div
+                className="flex items-center justify-center space-x-3 text-green-50/95"
+                variants={statsVariants}
+                whileHover="hover"
+              >
+                <div className="p-3 rounded-full bg-green-200/20 backdrop-blur-sm">
+                  <ShoppingBag className="h-8 w-8 text-green-200" />
+                </div>
+                <div>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-green-200 to-emerald-200 bg-clip-text text-transparent">50+</div>
+                  <div className="text-sm font-medium">Categories</div>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Features Section */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
@@ -129,9 +211,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           
           <div className="relative">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredItems.map((item) => (
+              {featuredItems.map((item, index) => (
                 <ItemCard
-                  key={item.id}
+                  key={item.id ?? index}
                   item={item}
                   onClick={() => onNavigate('item-detail', item.id)}
                 />
